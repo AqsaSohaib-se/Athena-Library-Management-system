@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Athena DSA Library System - Premium Academic Portfolio Index.">
+    <title>Athena - Library System Archive</title>
+    <link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+
+    <!-- ==========================================
+         CINEMATIC SYSTEM PRELOADER
+         ========================================== -->
+    <div id="preloader">
+        <div class="preloader-header">
+            <span class="preloader-tag">Athena Library Archive</span>
+            <span class="preloader-tag" style="color: var(--text-primary);">Booting System...</span>
+        </div>
+        <div class="preloader-center">
+            <h2 class="preloader-title">Indexing<br>Data Structures</h2>
+            <p class="preloader-subtitle">Loading Stack • Queue • Hashing • Category Tree</p>
+        </div>
+        <div class="preloader-footer">
+            <div style="flex: 1;">
+                <div class="preloader-bar-bg">
+                    <div class="preloader-bar-fill" id="preloader-bar"></div>
+                </div>
+                <span class="preloader-tag">Initializing Core Memory registers...</span>
+            </div>
+            <div class="preloader-counter" id="preloader-percent">00</div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         APP HEADER
+         ========================================== -->
+    <header>
+        <div class="logo-container">
+            <div class="logo-text">
+                <h1>ATHENA</h1>
+                <span>Library Archive Index</span>
+            </div>
+        </div>
+
+        <div class="header-controls">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 8px;">
+                <span id="current-user-display" style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">
+                    Role: <strong style="color: var(--accent-gold);" id="user-role-badge">Admin</strong>
+                </span>
+                
+                <!-- Student login selector, visible only when member role is active -->
+                <div id="student-selector-wrapper" style="display: none; align-items: center; gap: 8px;">
+                    <label for="student-login-select" style="margin: 0; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap; font-weight: 700;">Profile:</label>
+                    <select id="student-login-select" style="width: 160px; padding: 4px 8px; font-size: 0.75rem; background: var(--bg-carbon); height: 28px; border: var(--border-hairline); color: var(--text-primary);" onchange="app.switchStudentProfile(this.value)">
+                        <!-- Filled dynamically -->
+                    </select>
+                </div>
+            </div>
+            <div class="role-picker">
+                <button type="button" class="role-btn active" id="role-admin-btn" onclick="app.setRole('admin')">Admin</button>
+                <button type="button" class="role-btn" id="role-member-btn" onclick="app.setRole('member')">Member</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================
+         NAVIGATION
+         ========================================== -->
+    <div class="main-nav">
+        <div class="nav-container">
+            <a href="#" class="nav-link active" id="nav-dashboard" onclick="app.switchTab('dashboard')">Overview</a>
+            <a href="#" class="nav-link" id="nav-books" onclick="app.switchTab('books')">Catalogue</a>
+            <a href="#" class="nav-link" id="nav-users" onclick="app.switchTab('users')">Members</a>
+            <a href="#" class="nav-link" id="nav-history" onclick="app.switchTab('history')">Ledger Stack</a>
+            <a href="#" class="nav-link" id="nav-visualizer" onclick="app.switchTab('visualizer')" style="color: var(--accent-gold);">DSA Playground</a>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MAIN ARCHIVE VIEWS
+         ========================================== -->
+    <main>
+
+        <!-- 1. TAB: OVERVIEW -->
+        <section id="tab-dashboard" class="tab-content active">
+            <!-- stats visualizer grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total Catalogue</h3>
+                        <div class="stat-number" id="stat-total-books">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3 id="stat-label-card2">Students Registered</h3>
+                        <div class="stat-number" id="stat-total-members">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3 id="stat-label-card3">Active Borrowed</h3>
+                        <div class="stat-number" id="stat-active-issues">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3 id="stat-label-card4">Waiting Queues</h3>
+                        <div class="stat-number" id="stat-waiting-queue">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Split Panel -->
+            <div class="dashboard-grid">
+                <!-- Action panel -->
+                <div class="glass-panel">
+                    <div class="dashboard-panel-header">
+                        <h2>System Commands</h2>
+                        <span class="badge badge-cyan" id="quick-action-badge">Admin Controls</span>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;" id="admin-quick-actions">
+                        <button class="btn-primary" onclick="app.openAddBookModal()">Add Catalogue Book</button>
+                        <button class="btn-secondary" onclick="app.openRegisterMemberModal()">Register Student</button>
+                        <button class="btn-accent" onclick="app.switchTab('visualizer')">Start DSA Visualizer</button>
+                    </div>
+
+                    <div id="member-quick-actions" style="display: none;">
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 24px; max-width: 500px;">
+                            You have connected to the student register portal. Switch views to the Catalogue index to search for volumes, issue copies, or view active queues.
+                        </p>
+                        <button class="btn-primary" onclick="app.switchTab('books')">Browse Catalogue Directory</button>
+                    </div>
+
+                    <div style="margin-top: 40px; border-top: var(--border-hairline); padding-top: 30px;">
+                        <h3 style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px; color: var(--accent-gold);">Operational Architecture</h3>
+                        <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.8rem; color: var(--text-secondary);">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="badge badge-success" style="padding: 2px 6px;">INDEXED</span> <span>Books organized dynamically via Chaining Hash Map search.</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="badge badge-success" style="padding: 2px 6px;">QUEUE</span> <span>FIFO queue waitlist structures deployed for zero-stock books.</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="badge badge-success" style="padding: 2px 6px;">STACK</span> <span>LIFO stack tracking history operations with visual reverse rollback.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stack log column -->
+                <div class="glass-panel">
+                    <div class="dashboard-panel-header">
+                        <h2>Ledger Stack Pile</h2>
+                        <button class="btn-icon-only" onclick="app.popHistoryStack()" title="Undo Last Operation (Pop Stack)">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="history-flow-list" id="dashboard-recent-history-list">
+                        <div style="color: var(--text-muted); text-align: center; padding: 40px 0;">No operations recorded.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. TAB: CATALOGUE DIRECTORY -->
+        <section id="tab-books" class="tab-content">
+            <div class="glass-panel">
+                <div class="dashboard-panel-header">
+                    <h2>Library Catalogue</h2>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn-secondary btn-icon-only" onclick="app.visualSortBooks('title')" title="Visual Sorter Panel">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18H3M21 14H3M17 10H3M12 6H3"/></svg>
+                        </button>
+                        <button class="btn-primary admin-only" onclick="app.openAddBookModal()">Add Catalogue Book</button>
+                    </div>
+                </div>
+
+                <div class="search-sort-bar">
+                    <div class="search-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="books-search-input" placeholder="Search index via custom Hash lookup..." oninput="app.searchBooks(this.value)">
+                    </div>
+                    <div class="filters-wrapper">
+                        <select id="books-category-filter" style="width: 200px;" onchange="app.filterBooksByCategory(this.value)">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select id="books-sort-select" style="width: 180px;" onchange="app.sortBooks(this.value)">
+                            <option value="id-asc">Sort: Default Index</option>
+                            <option value="title-asc">Title: A-Z</option>
+                            <option value="title-desc">Title: Z-A</option>
+                            <option value="author-asc">Author: A-Z</option>
+                            <option value="quantity-desc">Quantity: High-Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="custom-table-wrapper">
+                    <table class="custom-table" id="books-directory-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Book Title</th>
+                                <th>Author</th>
+                                <th>ISBN Register</th>
+                                <th>Category Tree Node</th>
+                                <th>Status / Stock</th>
+                                <th>Queue List</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="books-directory-tbody">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. TAB: MEMBERS REGISTER -->
+        <section id="tab-users" class="tab-content">
+            <div class="glass-panel">
+                <div class="dashboard-panel-header">
+                    <h2>Students Register</h2>
+                    <button class="btn-primary admin-only" onclick="app.openRegisterMemberModal()">Register Student</button>
+                </div>
+
+                <div class="custom-table-wrapper">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Full Student Name</th>
+                                <th>Email Address</th>
+                                <th>System Privilege</th>
+                                <th>Issued Books Ledger</th>
+                                <th class="admin-only">Commands</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-directory-tbody">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. TAB: HISTORICAL LEDGER STACK -->
+        <section id="tab-history" class="tab-content">
+            <div class="glass-panel">
+                <div class="dashboard-panel-header">
+                    <h2>Ledger Stack Register</h2>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn-danger" id="clear-history-btn" onclick="app.clearHistory()">Purge Logs</button>
+                        <button class="btn-primary" onclick="app.popHistoryStack()">Pop Stack (Rollback)</button>
+                    </div>
+                </div>
+
+                <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 24px; max-width: 600px;">
+                    This structural audit log records transaction traces via a <strong>LIFO (Last In First Out) Stack</strong>. 
+                    Pop executes a structural rollback of state registers (returning volumes or undoing waitlist assignments).
+                </p>
+
+                <div class="custom-table-wrapper">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Reference Hex</th>
+                                <th>Audited Date</th>
+                                <th>Operation Privilege</th>
+                                <th>Member Profile</th>
+                                <th>Transaction Detail Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-full-tbody">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. TAB: DSA PLAYGROUND LAB -->
+        <section id="tab-visualizer" class="tab-content">
+            <div class="dsa-lab-grid">
+                <!-- Left selector panel -->
+                <div class="dsa-menu">
+                    <button class="dsa-menu-btn active" id="menu-v-hashmap" onclick="app.switchVisualizer('hashmap')">
+                        Search (Hash Map)
+                    </button>
+                    <button class="dsa-menu-btn" id="menu-v-queue" onclick="app.switchVisualizer('queue')">
+                        Waitlist (FIFO Queue)
+                    </button>
+                    <button class="dsa-menu-btn" id="menu-v-stack" onclick="app.switchVisualizer('stack')">
+                        Ledger (LIFO Stack)
+                    </button>
+                    <button class="dsa-menu-btn" id="menu-v-tree" onclick="app.switchVisualizer('tree')">
+                        Directory (Tree Index)
+                    </button>
+                    <button class="dsa-menu-btn" id="menu-v-sorting" onclick="app.switchVisualizer('sorting')">
+                        Sorter (Quick/Merge)
+                    </button>
+                </div>
+
+                <!-- Right visualizer screen -->
+                <div class="glass-panel" style="min-height: 520px; display: flex; flex-direction: column;">
+                    <div class="dsa-board-title">
+                        <h3 id="visualizer-title">Search (Hash Map)</h3>
+                        <span class="badge badge-cyan" id="visualizer-badge">O(1) Avg Complexity</span>
+                    </div>
+
+                    <div class="dsa-board-desc" id="visualizer-description">
+                        Tracing chaining node allocations in a prime-modulus 13 Hashing Register array.
+                    </div>
+
+                    <!-- Subtabs switcher to toggle Visualizer Sandbox vs C++ Code -->
+                    <div class="role-picker" style="margin-bottom: 20px; width: fit-content;">
+                        <button type="button" class="role-btn active" id="subtab-visualizer-btn" onclick="app.switchVisualizerSubTab('visualizer')">Interactive Visualizer</button>
+                        <button type="button" class="role-btn" id="subtab-cpp-btn" onclick="app.switchVisualizerSubTab('cpp')">C++ Source Code</button>
+                    </div>
+
+                    <!-- Sandbox terminal box -->
+                    <div class="visualizer-window" id="visualizer-workspace-box">
+                        <!-- Canvas / Elements loaded dynamically -->
+                    </div>
+
+                    <!-- C++ Code Viewer Box -->
+                    <div class="visualizer-window" id="visualizer-cpp-box" style="display: none; align-items: stretch; justify-content: flex-start; text-align: left; padding: 20px; overflow: auto; max-height: 500px;">
+                        <pre style="margin: 0; width: 100%; white-space: pre-wrap;"><code id="cpp-code-content" style="font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; color: var(--accent-gold); line-height: 1.4;"></code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================
+         SYSTEM MODALS
+         ========================================== -->
+
+    <!-- MODAL: ADD / EDIT CATALOGUE BOOK -->
+    <div class="modal-overlay" id="book-modal">
+        <div class="glass-panel modal-box">
+            <div class="modal-header">
+                <h3 id="book-modal-title">Catalogue Volume Record</h3>
+                <button class="modal-close" onclick="app.closeBookModal()">&times;</button>
+            </div>
+            <form id="book-modal-form" onsubmit="app.handleBookFormSubmit(event)">
+                <input type="hidden" id="form-book-id">
+                
+                <div class="form-group">
+                    <label for="form-book-title">Catalogue Book Title</label>
+                    <input type="text" id="form-book-title" required placeholder="e.g. Introduction to Algorithms">
+                </div>
+                
+                <div class="form-group">
+                    <label for="form-book-author">Primary Author Name</label>
+                    <input type="text" id="form-book-author" required placeholder="e.g. Thomas H. Cormen">
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label for="form-book-isbn">ISBN Reference Code</label>
+                        <input type="text" id="form-book-isbn" required placeholder="e.g. 9780262033848">
+                    </div>
+                    <div class="form-group">
+                        <label for="form-book-qty">Quantity register</label>
+                        <input type="number" id="form-book-qty" min="0" required placeholder="5">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-book-category">Index Category Path</label>
+                    <select id="form-book-category" required>
+                        <!-- Filled dynamically -->
+                    </select>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                    <button type="button" class="btn-secondary" onclick="app.closeBookModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" id="form-book-submit-btn">Commit Volume</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: REGISTER STUDENT -->
+    <div class="modal-overlay" id="member-modal">
+        <div class="glass-panel modal-box">
+            <div class="modal-header">
+                <h3>Register Student Profile</h3>
+                <button class="modal-close" onclick="app.closeMemberModal()">&times;</button>
+            </div>
+            <form id="member-modal-form" onsubmit="app.handleMemberFormSubmit(event)">
+                <div class="form-group">
+                    <label for="form-member-name">Full Student Name</label>
+                    <input type="text" id="form-member-name" required placeholder="e.g. Rahul Sharma">
+                </div>
+                
+                <div class="form-group">
+                    <label for="form-member-email">Institutional Email</label>
+                    <input type="email" id="form-member-email" required placeholder="e.g. rahul@university.edu">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                    <button type="button" class="btn-secondary" onclick="app.closeMemberModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Commit Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: COMPLETE ISSUE -->
+    <div class="modal-overlay" id="issue-modal">
+        <div class="glass-panel modal-box">
+            <div class="modal-header">
+                <h3>Transaction Dispatch</h3>
+                <button class="modal-close" onclick="app.closeIssueModal()">&times;</button>
+            </div>
+            <form id="issue-modal-form" onsubmit="app.handleIssueFormSubmit(event)">
+                <input type="hidden" id="form-issue-book-id">
+                
+                <div class="form-group">
+                    <label>Volume Selected</label>
+                    <input type="text" id="form-issue-book-title" readonly style="background: var(--bg-obsidian); border-color: transparent;">
+                </div>
+
+                <div class="form-group">
+                    <label for="form-issue-user-select">Select Target Student</label>
+                    <select id="form-issue-user-select" required>
+                        <!-- Filled dynamically -->
+                    </select>
+                </div>
+
+                <div id="issue-waiting-warning" style="display: none; background: hsla(0, 50%, 55%, 0.05); border: 1px solid var(--accent-crimson); padding: 16px; font-size: 0.8rem; color: var(--accent-crimson); margin-bottom: 24px;">
+                    ⚠️ No copy register units are available in physical stock. Issuing this title will append the selected student profile onto the FIFO Waitlist register.
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                    <button type="button" class="btn-secondary" onclick="app.closeIssueModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" id="form-issue-submit-btn">Dispatch Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SYSTEM ALERTS CONTAINER -->
+    <div class="toast-container" id="toast-container-box"></div>
+
+    <!-- SCRIPTS -->
+    <script src="dsa.js?v=5"></script>
+    <script src="app.js?v=5"></script>
+</body>
+</html>
